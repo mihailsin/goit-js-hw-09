@@ -16,10 +16,11 @@ function createPromise(position, delay) {
 }
 function onSubmit(e) {
   e.preventDefault();
-  let delay = form.elements.delay.value;
-  let step = form.elements.step.value;
-  let position = form.elements.amount.value;
-  for (let i = 1; i <= position; i += 1) {
+  let delay = Number(form.elements.delay.value);
+  let step = Number(form.elements.step.value);
+  let amount = form.elements.amount.value;
+  let position = 1;
+  for (let i = 1; i <= amount; i += 1) {
     createPromise(position, delay)
       .then(({ position, delay }) => {
         console.log(`✅ Fulfilled promise ${position} in ${delay}ms`);
@@ -27,5 +28,7 @@ function onSubmit(e) {
       .catch(({ position, delay }) => {
         console.log(`❌ Rejected promise ${position} in ${delay}ms`);
       });
+    delay += step;
+    position += 1;
   }
 }

@@ -1,3 +1,5 @@
+import Notiflix from 'notiflix';
+import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 const MESSAGE = 'Please choose a date in the future';
@@ -6,11 +8,22 @@ const hoursRef = document.querySelector('span[data-hours]');
 const minutesRef = document.querySelector('span[data-minutes]');
 const secondsRef = document.querySelector('span[data-seconds]');
 const startBtn = document.querySelector('button[data-start]');
-startBtn.setAttribute('disabled', 'true');
+disableBtn();
 startBtn.addEventListener('click', () => {
   timer.start();
 });
-
+function enableBtn() {
+  startBtn.removeAttribute('disabled');
+}
+function disableBtn() {
+  startBtn.setAttribute('disabled', 'true');
+}
+function resetTimer() {
+  daysRef.textContent = '00';
+  hoursRef.textContent = '00';
+  secondsRef.textContent = '00';
+  minutesRef.textContent = '00';
+}
 let dateX;
 const options = {
   enableTime: true,
@@ -20,10 +33,14 @@ const options = {
   onClose(selectedDates) {
     console.log(selectedDates[0]);
     if (selectedDates[0] < Date.now()) {
-      startBtn.setAttribute('disabled', 'true');
-      alert(MESSAGE);
+      disableBtn();
+      Notiflix.Notify.failure(MESSAGE, {
+        position: 'left-top',
+        width: '50vw',
+        clickToClose: true,
+      });
     } else {
-      startBtn.removeAttribute('disabled');
+      enableBtn();
       dateX = selectedDates[0];
     }
   },
@@ -54,11 +71,10 @@ function addLeadingZero(value) {
 
 const timer = {
   intervalId: null,
-  isActive: false,
   start() {
+    disableBtn();
     const startTime = dateX.getTime();
     this.intervalId = setInterval(() => {
-      this.isActive = true;
       const currentTime = Date.now();
       const deltaTime = startTime - currentTime;
       const { days, hours, minutes, seconds } = convertMs(deltaTime);
@@ -66,18 +82,24 @@ const timer = {
       hoursRef.textContent = `${hours}`;
       minutesRef.textContent = `${minutes}`;
       secondsRef.textContent = `${seconds}`;
+      if (Number(secondsRef.textContent) < 20) {
+        secondsRef.classList.add('danger');
+      }
       if (deltaTime <= 0) {
         this.stop();
-        startBtn.setAttribute('disabled', 'true');
-        daysRef.textContent = '00';
-        hoursRef.textContent = '00';
-        secondsRef.textContent = '00';
-        minutesRef.textContent = '00';
+        resetTimer();
+        disableBtn();
       }
     }, 1000);
   },
   stop() {
     clearInterval(this.intervalId);
-    alert('time is out!');
+    secondsRef.classList.remove('danger');
+    Notiflix.Notify.failure('TIME IS OUT!', {
+      position: 'center-center',
+      width: '100vw',
+      clickToClose: true,
+      fontSize: '4em',
+    });
   },
 };

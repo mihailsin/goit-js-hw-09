@@ -15,7 +15,7 @@
   "keywords": [],
   "author": "Misha Sinkov <mihailsin88@gmail.com>",
   "license": "ISC",
-  "bugs": { 
+  "bugs": {
     "url": "https://github.com/goitacademy/parcel-project-template/issues"
   },
   "devDependencies": {
@@ -26,6 +26,7 @@
     "sass": "^1.32.8"
   },
   "dependencies": {
-    "flatpickr": "^4.6.9"
+    "flatpickr": "^4.6.9",
+    "notiflix": "^3.1.0"
   }
 }

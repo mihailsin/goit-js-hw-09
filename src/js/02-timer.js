@@ -8,10 +8,17 @@ const hoursRef = document.querySelector('span[data-hours]');
 const minutesRef = document.querySelector('span[data-minutes]');
 const secondsRef = document.querySelector('span[data-seconds]');
 const startBtn = document.querySelector('button[data-start]');
+const datePicker = document.querySelector('#datetime-picker');
 disableBtn();
 startBtn.addEventListener('click', () => {
   timer.start();
 });
+function enableDatePicker() {
+  datePicker.removeAttribute('disabled');
+}
+function disableDatePicker() {
+  datePicker.setAttribute('disabled', 'true');
+}
 function enableBtn() {
   startBtn.removeAttribute('disabled');
 }
@@ -73,6 +80,7 @@ const timer = {
   intervalId: null,
   start() {
     disableBtn();
+    disableDatePicker();
     const startTime = dateX.getTime();
     this.intervalId = setInterval(() => {
       const currentTime = Date.now();
@@ -94,6 +102,7 @@ const timer = {
   },
   stop() {
     clearInterval(this.intervalId);
+    enableDatePicker();
     secondsRef.classList.remove('danger');
     Notiflix.Notify.failure('TIME IS OUT!', {
       position: 'center-center',
